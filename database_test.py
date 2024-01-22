@@ -1,14 +1,23 @@
 import sqlite3
+import csv
+
 
 con = sqlite3.connect("card_database.db")
 
 cur = con.cursor()
 
+
 cur.execute("CREATE TABLE websites (website_name TEXT, website_ID INTEGER)")
-cur.execute("CREATE TABLE products (barcode INTEGER, game_name TEXT, set_name TEXT, product_type TEXT, product_ID INTEGER )")
+cur.execute("CREATE TABLE products (barcode INTEGER, game_name TEXT, set_name TEXT, product_type TEXT, box_or_pack TEXT, product_ID INTEGER )")
+#cur.execute("CREATE TABLE products (barcode INTEGER, game_name TEXT, set_name TEXT, product_type TEXT, product_ID INTEGER )")
 cur.execute("CREATE TABLE website_urls          (website_ID INTEGER, product_ID INTEGER, URL TEXT, PARSER TEXT)")
 cur.execute("CREATE TABLE product_price_history (website_ID INTEGER, product_ID INTEGER, date TEXT, price_base INTEGER, currency TEXT)")
 
+
+con.commit()
+
+con.close()
+quit()
 
 cur.execute("delete from website_urls")
 
@@ -129,19 +138,25 @@ cur.execute("insert into products values (9421905459327,'Flesh and Blood','Arcan
 
 
 res = cur.execute("SELECT * FROM websites")
- 
-print (res.fetchall())
+with open('websites.csv','w',newline='') as csvfile:
+    url_writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    url_writer.writerows(res.fetchall())
 
 res = cur.execute("SELECT * FROM products")
+with open('products.csv','w',newline='') as csvfile:
+    url_writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    url_writer.writerows(res.fetchall())
  
-print (res.fetchall())
-
-
-
 res = cur.execute("SELECT * FROM website_urls")
- 
-print (res.fetchall())
+with open('website_urls.csv','w',newline='') as csvfile:
+    url_writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    url_writer.writerows(res.fetchall())
+
 
 
 con.commit()
+
 con.close()
+
+
+
